@@ -55,7 +55,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .docwrap{position:sticky;top:12px}
 .doc{background:#fff;color:#2b2623;border-radius:6px;box-shadow:0 1px 2px #0002,0 12px 32px -12px #4a3f3855;padding:28px;font-size:13px;line-height:1.45}
 .doc .hd{display:flex;justify-content:space-between;gap:16px;border-bottom:2px solid #b2a192;padding-bottom:14px}
-.doc .hd img{max-height:84px;max-width:170px;margin-bottom:6px;object-fit:contain}
+.doc .hd img{max-height:96px;max-width:200px;margin-bottom:6px;object-fit:contain}
 .doc .clin b{display:block;font-size:17px;color:#4a3f38}
 .doc .clin{color:#6b5e55}
 .doc .meta{text-align:right;color:#6b5e55;white-space:nowrap}
@@ -70,8 +70,8 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
 .doc .sums .g{font-size:17px;font-weight:700;color:#4a3f38;border-top:2px solid #4a3f38;margin-top:4px;padding-top:7px}
 .doc .ft{margin-top:22px;color:#7a6d64;font-size:11.5px;border-top:1px solid #efe8e1;padding-top:10px;white-space:pre-line}
 .doc .empty{color:#a89a8f;text-align:center;padding:22px 0}
-.doc.a4{width:794px;min-height:1123px;border-radius:0;box-shadow:none;padding:48px 52px;font-size:13.5px}
-#stage{position:fixed;left:-12000px;top:0}
+.doc.a4{width:794px;min-height:1110px;border-radius:0;box-shadow:none;padding:48px 52px;font-size:13.5px}
+#stage{position:absolute;left:-12000px;top:0;width:794px}
 .pl{width:100%;border-collapse:collapse}
 .pl td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:middle}
 .pl input[type=checkbox]{width:22px;min-height:22px}
@@ -222,18 +222,18 @@ let dl=null;
 $('pdf').onclick=async()=>{
  const msg=$('msg');if(!window.html2pdf){msg.textContent='Δεν φόρτωσε το εργαλείο PDF. Δοκίμασε ξανά σε λίγο.';return}
  msg.textContent='Ετοιμάζεται το PDF…';
- const st=$('stage');st.innerHTML=`<div class="doc a4">${docHTML()}</div>`;
+ const sy=window.scrollY;window.scrollTo(0,0);const st=$('stage');st.innerHTML=`<div class="doc a4">${docHTML()}</div>`;
  const fname=`Προσφορά ${q.no} ${(q.name||'ασθενής').replace(/[\\/:*?"<>|]/g,'')}.pdf`;
  try{
-  const blob=await html2pdf().set({margin:0,image:{type:'jpeg',quality:.96},html2canvas:{scale:2,backgroundColor:'#ffffff'},jsPDF:{unit:'px',format:[794,1123],hotfixes:['px_scaling']},pagebreak:{mode:['css','legacy'],avoid:'tr'}}).from(st.firstElementChild).outputPdf('blob');
-  st.innerHTML='';
+  const blob=await html2pdf().set({margin:0,image:{type:'jpeg',quality:.96},html2canvas:{scale:2,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:794},jsPDF:{unit:'px',format:[794,1123],hotfixes:['px_scaling']},pagebreak:{mode:['css','legacy'],avoid:'tr'}}).from(st.firstElementChild).outputPdf('blob');
+  st.innerHTML='';window.scrollTo(0,sy);
   if(dl){await dl.save({filename:fname,data:blob})}
   else{const f=new File([blob],fname,{type:'application/pdf'});
    if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:fname});
    else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fname;document.body.appendChild(a);a.click();a.remove()}}
   msg.textContent='Έτοιμο ✓';
   const n=parseInt(q.no,10);if(n>=load('nextNo',1))save('nextNo',n+1);
- }catch(e){st.innerHTML='';msg.textContent=e&&e.code==='declined'?'Ακυρώθηκε.':'Δεν ολοκληρώθηκε η αποθήκευση. Δοκίμασε ξανά.'}
+ }catch(e){st.innerHTML='';window.scrollTo(0,sy);msg.textContent=e&&e.code==='declined'?'Ακυρώθηκε.':'Δεν ολοκληρώθηκε η αποθήκευση. Δοκίμασε ξανά.'}
 };
 
 // price list
