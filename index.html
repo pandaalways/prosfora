@@ -149,7 +149,7 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid v
     </div>
   </section>
 </main>
-<p class="note" id="ver" style="text-align:center;margin:0 0 24px">Έκδοση 1.2 · 25/11/2026</p>
+<p class="note" id="ver" style="text-align:center;margin:0 0 24px">Έκδοση 1.3 · 26/11/2026</p>
 <div id="stage"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
@@ -226,7 +226,7 @@ $('pdf').onclick=async()=>{
  const sy=window.scrollY;window.scrollTo(0,0);const st=$('stage');st.innerHTML=`<div class="doc a4">${docHTML()}</div>`;
  const fname=`Προσφορά ${q.no} ${(q.name||'ασθενής').replace(/[\\/:*?"<>|]/g,'')}.pdf`;
  try{
-  const blob=await html2pdf().set({margin:0,image:{type:'jpeg',quality:.96},html2canvas:{scale:2,backgroundColor:'#ffffff',scrollX:0,scrollY:0,windowWidth:794},jsPDF:{unit:'px',format:[794,1123],hotfixes:['px_scaling']},pagebreak:{mode:['css','legacy'],avoid:'tr'}}).from(st.firstElementChild).outputPdf('blob');
+  const blob=await html2pdf().set({margin:0,image:{type:'jpeg',quality:.96},html2canvas:{scale:2,backgroundColor:'#ffffff',scrollX:0,scrollY:0},jsPDF:{unit:'px',format:[794,1123],hotfixes:['px_scaling']},pagebreak:{mode:['css','legacy'],avoid:'tr'}}).from(st.firstElementChild).outputPdf('blob');
   st.innerHTML='';window.scrollTo(0,sy);
   if(dl){await dl.save({filename:fname,data:blob})}
   else{const f=new File([blob],fname,{type:'application/pdf'});
